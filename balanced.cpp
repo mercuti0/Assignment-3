@@ -1,5 +1,6 @@
 /*
- * This function returns the
+ * This function returns whether or not the bracketing operators are properly nested and matched.
+ * This can be applied to coding with C++ as all the operators need to be balanced.
  */
 #include <iostream>    // for cout, endl
 #include <string>      // for string class
@@ -9,8 +10,9 @@
 using namespace std;
 
 /*
- * TODO: Replace this comment with a descriptive function
- * header comment.
+ * This function goes through the entirety of string str, only
+ * returning the bracketing operators, removing all the non-bracketing
+ * operators.
  */
 string operatorsFrom(string str) {
     Set<char> cleanOptions = {'(', ')', '{', '}', '[', ']'};
@@ -19,27 +21,41 @@ string operatorsFrom(string str) {
     if (cleanOptions.contains(str[0]))
         return str[0] + operatorsFrom(str.substr(1));
     else {
+        // Removes the non-bracketing operator
         return operatorsFrom(str.substr(1));
     }
 }
 
 /*
- * TODO: Replace this comment with a descriptive function
- * header comment.
+ * This function will run until the size of the given string ops is 0, if true. First,
+ * if the string does not start with an opening bracket operator, or if there is only one
+ * character, then the string was unbalanced. Then, if the closing pair of the first opening
+ * operator actually has its opening pair next to it, we remove those. If this opening pair next
+ * to it does not belong to this closing bracket, then it is unbalanced or just false. Lastly,
+ * since we first determined that there was an open/close pair, and its not part of the listed
+ * conditions, then they are a balanced pair that can be removed to continue checking ops.
  */
 bool operatorsAreMatched(string ops) {
     Map<char, char> indexCheck = {{'(', ')'}, {'{', '}'}, {'[', ']'}};
     Set<char> open = {'(', '{', '['};
     if (ops.size() < 1)
         return true;
-    if (stringIndexOf(ops, indexCheck[ops[0]]) == -1 || ops.size() == 1 || !open.contains(ops[0]))
+
+    // This checks if the string starts with a close, or if size is just 1
+    if (stringIndexOf(ops, indexCheck[ops[0]]) == -1 || ops.size() == 1)
         return false;
+
+    // Checks if the closest closing pair actually has its opening pair behind it
     else if (ops[stringIndexOf(ops, indexCheck[ops[0]]) - 1] == ops[0]) {
         ops.erase(stringIndexOf(ops, indexCheck[ops[0]]) - 1, 2);
         return operatorsAreMatched(ops);
-    } else if (open.contains(ops[stringIndexOf(ops, indexCheck[ops[0]]) - 1])){
+
+    // Checks if the opening pair behind the closing one does not belong to it
+    } else if (open.contains(ops[stringIndexOf(ops, indexCheck[ops[0]]) - 1])) {
         return false;
+
     } else {
+        // With the above conditions met, the respective pair can be removed
         ops.erase(stringIndexOf(ops, indexCheck[ops[0]]), 1);
         ops.erase(0, 1);
         return operatorsAreMatched(ops);

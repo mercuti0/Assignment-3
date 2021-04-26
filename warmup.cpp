@@ -22,6 +22,9 @@ using namespace std;
  * negative inputs.
  */
 int factorial(int n) {
+    if (n < 0) {
+        error ("Factorial of a negative number cannot be calculated.");
+    }
     if (n == 0) {
         return 1;
     } else {
@@ -39,7 +42,6 @@ int factorial(int n) {
  */
 double iterativePower(int base, int exp) {
     double result = 1;
-
     if (base == 0) {
       return 0;
     }
@@ -53,21 +55,16 @@ double iterativePower(int base, int exp) {
 }
 
 /* This is an iterative implementation of a function that calculates
- * the exponentiation operation to raise a base to an exponent.
- *
- * Warning: This is a buggy implementation! It works mostly correctly
- * but it has some bugs that you should find and fix. Refer to the
- * writeup for further instructions on how to do so.
+ * the exponentiation operation to raise a base to an exponent while
+ * base and exp do not simultaneously equal to 0.
  */
 double power(int base, int exp) {
+    if (base == 0 && exp == 0)
+        error("Answer is undefined.");
     if (base == 0) {
         return 0;
     } else if (exp == 0) {
         return 1;
-    } else if (exp == 1) {
-        return base;
-    } else if (exp == -1) {
-        return 1/base;
     } else if (exp < 0) {
         return 1/power(base, -exp);
     } else {
@@ -88,4 +85,39 @@ PROVIDED_TEST("Test recursive power against iterative power, random inputs") {
         int exp = randomInteger(0, 10);
         EXPECT_EQUAL(power(base, exp), iterativePower(base, exp));
     }
+}
+
+STUDENT_TEST("Test factorial function on negatives") {
+    EXPECT_ERROR(factorial(-7));
+    EXPECT_ERROR(factorial(-1));
+}
+
+STUDENT_TEST("Test recursive power against iterative power, random inputs") {
+    for (int i = 0; i < 25; i++) {
+        int base = randomInteger(-20, -1);
+        int exp = randomInteger(0, 10);
+        EXPECT_EQUAL(power(base, exp), iterativePower(base, exp));
+    }
+}
+
+STUDENT_TEST("Test recursive power against iterative power, random inputs") {
+    for (int i = 0; i < 25; i++) {
+        int base = randomInteger(1, 20);
+        int exp = randomInteger(-10, -1);
+        cout << base << " , " << exp << endl;
+        EXPECT_EQUAL(power(base, exp), iterativePower(base, exp));
+    }
+}
+
+STUDENT_TEST("Test recursive power against iterative power, random inputs") {
+    for (int i = 0; i < 25; i++) {
+        int base = randomInteger(1, 20);
+        int exp = -1;
+        EXPECT_EQUAL(power(base, exp), iterativePower(base, exp));
+    }
+}
+STUDENT_TEST("Test recursive power against iterative power, random inputs") {
+        int base = 0;
+        int exp = 0;
+        EXPECT_ERROR(power(base, exp));
 }
